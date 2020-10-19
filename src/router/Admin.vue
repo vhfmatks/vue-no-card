@@ -1,18 +1,20 @@
 <template>
   <div>
+    <Tab title='admin'/>
     <v-card>
       <v-container fluid>
         <v-row>
-          <v-col cols="12" sm="10">
+          <v-col cols="12" md="5">
             <v-text-field
               label="검색"
               placeholder="search keword.."
               v-model="srchKey"
-              outlined
+              hide-details='auto'
+              @keyup.enter="addrSearch()"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" sm="2">
-            <v-btn @click="addrSearch()" x-large color="secondary" outlined>
+          <v-col cols="12" md="2">
+            <v-btn  @click="addrSearch()" x-large color="secondary" outlined>
               검색
             </v-btn>
           </v-col>
@@ -75,8 +77,12 @@
 <script>
 import axios from "axios"
 import firebase from 'firebase'
+import Tab from '../components/Tab'
 
 export default {
+  components : {
+    Tab
+  },
   data: () => ({
     // items: [ { key: 1, value : "MS" } , { key: 2, value : "QR" } , { key: 3, value : "KakaoPay" }, { key: 4, value : "NFC" } ],
     items: ["MS", "NFC", "BC QR", "KakaoPay"],
@@ -98,8 +104,8 @@ export default {
       if( this.merNm == "" ) return alert("가맹점명을 입력하세요.")
       if( this.merAddr == "" ) return alert("가맹점주소를 입력하세요.")
       if( this.payMthd.length <= 0 ) return alert("결제방식을 1개이상 입력하세요.")
-      
-      var newMerKey = firebase.database().ref().child("merInfo").push().key;
+
+      // var newMerKey = firebase.database().ref().child("merInfo").push().key;
 
       // var position = { y: y, x: x };
       var merData = {
@@ -109,10 +115,16 @@ export default {
         position: this.position,
         desc: this.desc,
       };
-      var updates = {};
-      updates["/merInfo/" + newMerKey] = merData;
+      
+      firebase.firestore().collection('merInfo').add(merData).then( () => { 
+        alert('성공'); 
+        this.init() 
+      
+      });
+      // var updates = {};
+      // updates["/merInfo/" + newMerKey] = merData;
       // updates['/merInfo/'] = merData;
-      firebase.database().ref().update(updates).then(() => {alert('성공'); this.init()});
+      // firebase.database().ref().update(updates).then(() => {alert('성공'); this.init()});
       // callback('성공');
     },
     selectSrchResult(selectedItem) {

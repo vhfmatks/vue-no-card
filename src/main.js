@@ -3,20 +3,26 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify'
 import router from './router'
 import firebase from 'firebase'
+import VueSession from 'vue-session'
 
 Vue.config.productionTip = false
 var firebaseConfig = {
-  apiKey: "AIzaSyAR0DU_ySDKECkdJ_ed8SQ-OcaDdZzPRlg",
-  authDomain: "no-card-d6bd3.firebaseapp.com",
-  databaseURL: "https://no-card-d6bd3.firebaseio.com",
-  projectId: "no-card-d6bd3",
-  storageBucket: "no-card-d6bd3.appspot.com",
-  messagingSenderId: "867586373609",
-  appId: "1:867586373609:web:4af387c8ecafea0863fd78",
-  measurementId: "G-BT7BKGZ2EY"
+  apiKey: "AIzaSyDeu4JqbhxChB2mVJSuxyWjk1Xmmhb3XCw",
+  authDomain: "pay-map.firebaseapp.com",
+  databaseURL: "https://pay-map.firebaseio.com",
+  projectId: "pay-map",
+  storageBucket: "pay-map.appspot.com",
+  messagingSenderId: "110922632702",
+  appId: "1:110922632702:web:fba71e27946fc3292884af",
+  measurementId: "G-5RQC0VHDH5"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+
+var sessionOptions = {
+  persist : true
+}
+Vue.use(VueSession, sessionOptions);
 
 new Vue({
   vuetify,

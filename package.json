@@ -12,8 +12,10 @@
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
     "firebase": "^7.23.0",
+    "firebase-admin": "^9.2.0",
     "vue": "^2.6.11",
     "vue-router": "^3.4.6",
+    "vue-session": "^1.0.0",
     "vuetify": "^2.2.11"
   },
   "devDependencies": {

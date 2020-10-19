@@ -1,24 +1,8 @@
 <template>
+  <div>
+    <Tab title='list' />
    <v-card class="mx-auto" max-width="100%">
-    <!-- <v-toolbar
-      color="pink"
-      dark
-    >
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-      <v-toolbar-title>Inbox</v-toolbar-title>
-
-      <v-spacer></v-spacer>
-
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon>mdi-checkbox-marked-circle</v-icon>
-      </v-btn>
-    </v-toolbar> -->
-
+   
     <v-list two-line>
       <v-list-item-group
         v-model="selected"
@@ -67,10 +51,14 @@
       </v-list-item-group>
     </v-list>
   </v-card>
+  </div>
 </template>
 
 <script>
+import Tab from '../components/Tab'
+
   export default {
+    components : {Tab,},
     data: () => ({
       selected: [2],
       items: [
