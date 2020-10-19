@@ -1,112 +1,56 @@
 <template>
-  <div >
-    <Tab title="home"/>
-    <div id="map"></div>
-    <MerDialog :dialog="dialog" :closeDialog="closeDialog" :data="dialogData" />
+  <div>
+    <!-- <div id="map"></div>
+    <MerDialog :dialog="dialog" :closeDialog="closeDialog" :data="dialogData" /> -->
+    <v-btn @click="showMap()">MAP</v-btn>
+    <v-btn @click="showList()">LIST</v-btn>
+    <Paymap v-if="showmap" v-bind:merData="merData" />
+    <Paylist v-if="showlist" v-bind:merData="merData" />
   </div>
 </template>
 
 <script>
 import firebase from "firebase";
-import MerDialog from "../components/MerDialog";
-import Tab from "../components/Tab";
+import Paymap from "../components/Paymap";
+import Paylist from "../components/Paylist";
 export default {
   name: "HomePage",
   data: () => ({
-    map: null,
     merData: [],
-    dialog: false,
-    dialogData: {},
-  }),
-  mounted() {
-    // console.log(this.map)
-    if (this.map == null) {
-      this.initMap();
-    } else {
-      console.log(this.map);
+    showmap : true,
+    showlist : false
+  }), 
+  methods : {
+    showMap(){
+      this.showmap = true;
+      this.showlist = false;
+    },
+    showList(){
+      this.showmap = false;
+      this.showlist = true;
     }
   },
-  components: {
-    MerDialog,
-    Tab,
-  },
-  methods: {
-    openDialog(merInfo) {
-      this.dialog = true;
-      this.dialogData = merInfo;
-    },
-    closeDialog() {
-      this.dialog = false;
-    },
-    merMarker(merInfo) {
-      var openDialog = this.openDialog;
-      var marker = new window.kakao.maps.Marker({
-        map: this.map,
-        position: new window.kakao.maps.LatLng(
-          merInfo.position.y,
-          merInfo.position.x
-        ),
-      });
-      marker.setMap(this.map);
-
-      window.kakao.maps.event.addListener(this.map, "click", function () {
-        // overlay.setMap(null);
-        // isOverlay = false;
-      });
-      window.kakao.maps.event.addListener(marker, "click", function () {
-        // 오버레이 출력
-        openDialog(merInfo);
-        // console.log("click marker", marker , overlay);
-        // overlay.setMap(this.map);
-      });
-    },
-    initMap() {
-      var container = document.getElementById("map");
-      var options = {
-        center: new window.kakao.maps.LatLng(37.56637, 126.99676),
-        level: 4,
-      };
-      this.map = new window.kakao.maps.Map(container, options);
-      // //마커추가하려면 객체를 아래와 같이 하나 만든다.
-      // var marker = new window.kakao.maps.Marker({
-      //     position: this.map.getCenter()
-      // });
-      // marker.setMap(this.map);
-      firebase
-        .firestore()
-        .collection("merInfo")
-        .get()
-        .then((snap) => {
-          snap.forEach((doc) => {
-            this.merData.push({ key: doc.id, data: doc.data() });
-            this.merMarker(doc.data());
-          });
-        })
-        .catch((err) => {
-          alert(err);
+  mounted() {
+    firebase
+      .firestore()
+      .collection("merInfo")
+      .get()
+      .then((snap) => {
+        snap.forEach((doc) => {
+          this.merData.push({ key: doc.id, data: doc.data() });
         });
-      // firebase
-      //   .firestore()
-      //   .ref("/merInfo")
-      //   .on("value", (snap) => {
-      //     for (const [key, value] of Object.entries(snap.val())) {
-      //       this.merData.push({ key, data: value });
-      //       this.merMarker(value);
-      //     }
-      //   });
-    },
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  },
+  components: {
+    Paymap,Paylist
   },
 };
 </script>
 
-<style> 
-.container {
-  height : 100vh
-}
-#map {
-  width: 100%;
-  height : 100vh;
-}
+<style>
 .wrap {
   position: absolute;
   left: 0;

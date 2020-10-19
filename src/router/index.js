@@ -3,7 +3,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 import Home from '../router/Home';
-import List from '../router/List';
+// import List from '../router/List';
 import Admin from '../router/Admin';
 import Signup from '../router/Signup';
 
@@ -14,7 +14,7 @@ export default new VueRouter({
     mode : "history",
     routes : [
         { path : "/", component: Home },
-        { path : "/list", component: List },
+        // { path : "/list", component: List },
         { path : "/admin", component: Admin },
         { path : "/signup", component: Signup }
     ]

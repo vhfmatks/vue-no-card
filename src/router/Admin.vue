@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <Tab title='admin'/>
+  <div id="admin">
     <v-card>
       <v-container fluid>
         <v-row>
@@ -19,7 +18,7 @@
             </v-btn>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row style="overflow:scroll">
           <v-list-item
             v-show="srchResult.length"
             v-for="item in srchResult"
@@ -77,11 +76,10 @@
 <script>
 import axios from "axios"
 import firebase from 'firebase'
-import Tab from '../components/Tab'
 
 export default {
   components : {
-    Tab
+    
   },
   data: () => ({
     // items: [ { key: 1, value : "MS" } , { key: 2, value : "QR" } , { key: 3, value : "KakaoPay" }, { key: 4, value : "NFC" } ],
