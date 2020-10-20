@@ -8,6 +8,8 @@
       <v-spacer></v-spacer>
 
       <v-menu :close-on-content-click="false"
+              :close-on-click="false"
+              v-model="menu"
               min-width="50vw" min-height="100vh">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -21,7 +23,7 @@
           
             <v-form>
               <v-card>
-                <v-text-field label="검색" v-model="mapSearchKey"></v-text-field>
+                <!-- <v-text-field label="검색" v-model="mapSearchKey"></v-text-field> -->
                 <v-checkbox v-for="(item, i) in items" :key="i"
                             :label="item" :value="item" v-model="payMthd">
                 </v-checkbox>
@@ -34,7 +36,7 @@
                   multiple
                   outlined
                 ></v-select> -->
-                <v-btn> Find </v-btn>
+                <v-btn @click="selectMerInfo"> Find </v-btn>
               </v-card>
             </v-form>
            
@@ -57,8 +59,10 @@ export default {
     showmap: true,
     showlist: false,
     mapSearchKey :"",
-    payMthd :[] ,
+    payMthd :["MS", "NFC", "BC QR", "KakaoPay"] ,
     items: ["MS", "NFC", "BC QR", "KakaoPay"],
+    merRef : Object,
+    menu: false
   }),
   methods: {
     showMap() {
@@ -69,12 +73,37 @@ export default {
       this.showmap = false;
       this.showlist = true;
     },
+    selectMerInfo(){
+      this.merData = [];
+      if(this.mapSearchKey.length > 0 ) {
+        this.merRef.where('merNm','==', this.mapSearchKey ).get()
+        .then( (snap) =>{
+          snap.forEach((doc) => {
+            this.merData.push({ key: doc.id, data: doc.data() });
+          });      
+        })
+        .catch( (err) => {
+          console.log("가맹점 검색 error" , err);
+        });
+      }else{
+        if(this.payMthd.length <= 0) 
+          return alert('검색조건은 1개 이상이어야 합니다.');
+        this.merRef.where('merPayMthd','array-contains-any',this.payMthd).get()
+        .then( (snap) =>{
+          snap.forEach((doc) => {
+            this.merData.push({ key: doc.id, data: doc.data() });
+          });      
+        })
+        .catch( (err) => {
+          console.log("가맹점 검색2 error" , err);
+        });
+      }
+      this.menu = false;
+    }
   },
   mounted() {
-    firebase
-      .firestore()
-      .collection("merInfo")
-      .get()
+    this.merRef = firebase.firestore().collection("merInfo");
+    this.merRef.get()
       .then((snap) => {
         snap.forEach((doc) => {
           this.merData.push({ key: doc.id, data: doc.data() });

@@ -1,5 +1,9 @@
 <template>
   <div>
+    <!-- <v-btn @click='showMarkers' > show </v-btn>
+    <v-btn @click='hideMarkers' > clear </v-btn>
+    <v-btn @click='clearMarkers' > clear </v-btn> -->
+
     <div id="map"></div>
     <MerDialog :dialog="dialog" :closeDialog="closeDialog" :data="dialogData" />
   </div>
@@ -17,6 +21,7 @@ export default {
     map: null,
     dialog: false,
     dialogData: {},
+    markers :[]
   }),
   mounted() {
     if( this.map == null )
@@ -27,12 +32,14 @@ export default {
   },
   watch : {  
     merData : function(newMer) {
-        if(this.map == null) 
-            this.initMap();
-        else 
-            newMer.forEach( (element )=>{
-                this.merMarker(element.data);
-            })
+        // if(this.map == null) 
+        //     this.initMap();
+        // else 
+        this.clearMarkers();
+        newMer.forEach( (element )=>{
+            this.merMarker(element.data);
+        });
+        this.showMarkers();
     }
   },
   methods: {
@@ -43,8 +50,30 @@ export default {
     closeDialog() {
       this.dialog = false;
     },
+    merMarkerInit(){
+      var marker = new window.kakao.maps.Marker({
+        map: this.map,
+      });
+      marker.setMap(null);
+    },
+    setMarkers(map){
+      this.markers.forEach( (marker) =>{
+        marker.setMap(map);
+      })
+    },
+    showMarkers(){
+      this.setMarkers(this.map);
+    },
+    hideMarkers(){
+      this.setMarkers(null);
+    },
+    clearMarkers(){
+      this.hideMarkers();
+      this.markers = [];
+    },
     merMarker(merInfo) {
       var openDialog = this.openDialog;
+      
       var marker = new window.kakao.maps.Marker({
         map: this.map,
         position: new window.kakao.maps.LatLng(
@@ -53,7 +82,8 @@ export default {
         ),
       });
       marker.setMap(this.map);
-
+      this.markers.push(marker);
+      
       window.kakao.maps.event.addListener(this.map, "click", function () {
         // overlay.setMap(null);
         // isOverlay = false;
@@ -61,8 +91,6 @@ export default {
       window.kakao.maps.event.addListener(marker, "click", function () {
         // 오버레이 출력
         openDialog(merInfo);
-        // console.log("click marker", marker , overlay);
-        // overlay.setMap(this.map);
       });
     },
     initMap() {
@@ -72,11 +100,7 @@ export default {
         level: 4,
       };
       this.map = new window.kakao.maps.Map(container, options);
-      // //마커추가하려면 객체를 아래와 같이 하나 만든다.
-      // var marker = new window.kakao.maps.Marker({
-      //     position: this.map.getCenter()
-      // });
-      // marker.setMap(this.map);
+
       this.merData.forEach((element) => {
         this.merMarker(element.data);
       });
