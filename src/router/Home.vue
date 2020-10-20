@@ -2,8 +2,45 @@
   <div>
     <!-- <div id="map"></div>
     <MerDialog :dialog="dialog" :closeDialog="closeDialog" :data="dialogData" /> -->
-    <v-btn @click="showMap()">MAP</v-btn>
-    <v-btn @click="showList()">LIST</v-btn>
+    <v-tabs>
+      <v-tab @click="showMap()">MAP</v-tab>
+      <v-tab @click="showList()">LIST</v-tab>
+      <v-spacer></v-spacer>
+
+      <v-menu :close-on-content-click="false"
+              min-width="50vw" min-height="100vh">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon large> mdi-magnify </v-icon>
+              </v-btn>
+            </template>
+          
+            <v-form>
+              <v-card>
+                <v-text-field label="검색" v-model="mapSearchKey"></v-text-field>
+                <v-checkbox v-for="(item, i) in items" :key="i"
+                            :label="item" :value="item" v-model="payMthd">
+                </v-checkbox>
+                 <!-- <v-select
+                  v-model="payMthd"
+                  :items="items"
+                  attach
+                  chips
+                  label="Pay"
+                  multiple
+                  outlined
+                ></v-select> -->
+                <v-btn> Find </v-btn>
+              </v-card>
+            </v-form>
+           
+          </v-menu>
+    </v-tabs>
+
     <Paymap v-if="showmap" v-bind:merData="merData" />
     <Paylist v-if="showlist" v-bind:merData="merData" />
   </div>
@@ -17,18 +54,21 @@ export default {
   name: "HomePage",
   data: () => ({
     merData: [],
-    showmap : true,
-    showlist : false
-  }), 
-  methods : {
-    showMap(){
+    showmap: true,
+    showlist: false,
+    mapSearchKey :"",
+    payMthd :[] ,
+    items: ["MS", "NFC", "BC QR", "KakaoPay"],
+  }),
+  methods: {
+    showMap() {
       this.showmap = true;
       this.showlist = false;
     },
-    showList(){
+    showList() {
       this.showmap = false;
       this.showlist = true;
-    }
+    },
   },
   mounted() {
     firebase
@@ -45,7 +85,8 @@ export default {
       });
   },
   components: {
-    Paymap,Paylist
+    Paymap,
+    Paylist,
   },
 };
 </script>

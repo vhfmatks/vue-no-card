@@ -5,6 +5,7 @@
         <v-app-bar color="deep-purple" dark>
           <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
           <v-toolbar-title > NO !! CARD! !</v-toolbar-title>
+
         </v-app-bar>
         <!-- <v-btn> abcd </v-btn> -->
         <router-view></router-view>
@@ -64,7 +65,7 @@ export default {
 
 <style>
 .router-view {
-  overflow: scroll hidden;
+  /* overflow: scroll hidden; */
   height: 80vh;
 }
 .content {

@@ -18,7 +18,7 @@
             </v-btn>
           </v-col>
         </v-row>
-        <v-row style="overflow:scroll">
+        <v-row>
           <v-list-item
             v-show="srchResult.length"
             v-for="item in srchResult"
